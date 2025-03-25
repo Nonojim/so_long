@@ -18,6 +18,9 @@
 # include <stdlib.h>
 # include <fcntl.h>
 # include "minilibx-linux/mlx.h"
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 1024
+# endif
 
 typedef struct s_app
 {
@@ -46,8 +49,12 @@ typedef struct s_app
 
 int			ft_strlen(char *str);
 void		ft_putstr_fd(char *s, int fd);
-static int	is_it_ber(char *file_name);
+int			is_it_ber(char *file_name);
 int			check_args(int argc, char **argv);
-void	game_init(t_app *game);
+void		game_init(t_app *game);
+char		*ft_strchr(const char *s, int c);
+char		*get_next_line(int fd);
+char		*ft_strdup(const char *s);
+char		*ft_strjoin(char *s1, const char *s2);
 
 #endif

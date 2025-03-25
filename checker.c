@@ -12,25 +12,7 @@
 
 #include "so_long.h"
 
-int	ft_strlen(char *str)
-{
-	int	i;
-
-	i = 0;
-	while (str[i])
-		i++;
-	return (i);
-}
-
-void	ft_putstr_fd(char *s, int fd)
-{
-	while (*s != '\0')
-	{
-		write(fd, s, 1);
-		s++;
-	}
-}
-static int	is_it_ber(char *file_name)
+int	is_it_ber(char *file_name)
 {
 	int	i;
 
