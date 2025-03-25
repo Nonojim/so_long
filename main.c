@@ -43,7 +43,7 @@ int	init_map(char *argv, t_app *game, int rows_counter)
 	line = 0;
 	game->map = malloc(sizeof(char *) * (rows_counter + 1));
 	if (!game->map)
-		return (write(2, "Error: malloc failed\n", 21), 0);
+		return (write(2, "Error: malloc failed\n", 21), 1);
 	fd = open(argv, O_RDONLY);
 	while (i < rows_counter)
 	{
@@ -54,15 +54,15 @@ int	init_map(char *argv, t_app *game, int rows_counter)
 		free(line);
 		if (!game->map[i])
 			return (write(2, "Error: malloc failed in ft_strtrim\n", 35),
-		free_map(game->map, game), close(fd), 0);
+				free_map(game->map, game), close(fd), 0);
 		i++;
 	}
 	game->map[i] = NULL;
 	close(fd);
-	return (1);
+	return (0);
 }
 
-void	count_pecs(t_game *game)
+void	count_key_tiles(t_app *game)
 {
 	int	i;
 	int	j;
@@ -74,84 +74,91 @@ void	count_pecs(t_game *game)
 		while (game->map[i][j] != '\0')
 		{
 			if (game->map[i][j] == 'P')
-			game->player++;
+			game->players_counter++;
 			else if (game->map[i][j] == 'E')
-			game->exit++;
+			game->exits_counter++;
 			else if (game->map[i][j] == 'C')
-			game->amount_c++;
+			game->collectibles_counter++;
 			j++;
 		}
 		i++;
 	}
 }
 
-int	is_map_format_correct(t_app *game)
+int	map_tiles_checker(t_app *game)
 {
-	if (game->amount_cols == game->rows_counter)
+	if (check_row_length(game->map) == 1)
 	{
-		write(1, "ERROR : map must be rectangular.\n", 33);
-		return (free_map(game->map, game), exit(1), 0);
+		free_map(game->map, game);
+		(exit(1));
 	}
-	if (are_map_rows_same_length(game->map) == 0)
-	return (free_map(game->map, game), exit(1), 0);
-	if (is_map_surrounded_by_1(game) == 0)
-		return (free_map(game->map, game), exit(1), 0);
-		if (are_map_attributs_valide(game->map) == 0)
-		return (free_map(game->map, game), exit(1), 0);
-		if (game->amount_c == 0 || game->player != 1 || game->exit != 1)
-		{
-			write(1, "ERROR : map rules not respected.\n", 33);
-			return (free_map(game->map, game), exit(1), 0);
-		}
-		return (1);
-	}
-	int	are_map_rows_same_length(char **map)
+	if (is_map_surrounded_by_1(game) == 1)
 	{
-		int	i;
-		
-		if (!map)
-		return (0);
-		i = 1;
-		while (map[i])
-		{
-			if (ft_strlen(map[0]) != ft_strlen(map[i]))
-			{
-				write(1, "ERROR : map has rows with iregular lenth.\n", 42);
-				return (0);
-			}
-			i++;
-		}
-		return (1);
+		free_map(game->map, game);
+		(exit(1));
 	}
+	if (are_map_attributs_valide(game->map) == 1)
+	{
+		free_map(game->map, game);
+		(exit(1));
+	}
+	if (game->collectibles_counter == 0 || game->players_counter != 1 || game->exits_counter != 1)
+	{
+		write(1, "ERROR : map rules not respected.\n", 33);
+		free_map(game->map, game);
+		(exit(1));
+	}
+	return (0);
+}
+
+int	check_row_length(char **map)
+{
+	int	i;
 	
-	int	is_map_surrounded_by_1(t_app *game)
+	if (!map)
+		return (1);
+	i = 1;
+	while (map[i])
 	{
-		int	i;
-		int	j;
-		int	a_rows;
-		int	a_cols;
-		
-		i = 0;
-		j = 0;
-		a_rows = game->rows_counter;
-		a_cols = game->amount_cols;
-		while (game->map[i])
+		if (ft_strlen(map[0]) != ft_strlen(map[i]))
+		{
+			write(1, "ERROR : map has rows with iregular lenth.\n", 42);
+			return (1);
+		}
 		i++;
-	while (j < a_cols)
+	}
+	return (0);
+}
+	
+int	is_map_surrounded_by_1(t_app *game)
+{
+	int	i;
+	int	j;
+	int	rows_counter;
+	int	cols_counter;
+	
+	i = 0;
+	j = 0;
+	rows_counter = game->rows_counter;
+	cols_counter = game->cols_counter;
+	while (game->map[i])
+	i++;
+	while (j < cols_counter)
 	{
-		if (game->map[0][j] != '1' || game->map[a_rows - 1][j] != '1')
-		return (write(1, "1 ERROR : invalid surrounded walls\n", 35), 0);
+		if (game->map[0][j] != '1' || game->map[rows_counter - 1][j] != '1')
+			return (write(1, "1 ERROR : invalid surrounded walls\n", 35), 1);
 		j++;
 	}
 	i = 1;
-	while (i < a_rows - 1)
+	while (i < rows_counter - 1)
 	{
-		if (game->map[i][0] != '1' || game->map[i][a_cols - 1] != '1')
-		return (write(1, "2 ERROR : invalid surrounded walls\n", 35), 0);
+		if (game->map[i][0] != '1' || game->map[i][cols_counter - 1] != '1')
+			return (write(1, "2 ERROR : invalid surrounded walls\n", 35), 1);
 		i++;
 	}
-	return (1);
+	return (0);
 }
+
 void	free_map(char **map, t_app *game)
 {
 	int i;
@@ -170,13 +177,14 @@ void	free_map(char **map, t_app *game)
 	}
 	free(map);
 }
+
 int	are_map_attributs_valide(char **map)
 {
 	int	i;
 	int	j;
 	
 	if (!map)
-	return (0);
+		return (1);
 	i = 0;
 	while (map[i])
 	{
@@ -187,26 +195,45 @@ int	are_map_attributs_valide(char **map)
 				!= 'C' && map[i][j] != '0' && map[i][j] != '1')
 				{
 					write(1, "ERROR : map has invalide attributs.\n", 36);
-					return (0);
+					return (1);
 				}
 				j++;
 			}
 			i++;
 		}
-		return (1);
-	}
+		return (0);
+}
 
-	void	handler_map_validator(char **argv, t_app *game)
-	{
-		game->rows_counter = count_lines(argv[1]);
-		init_map(argv[1], game, game->rows_counter);
-		game->amount_cols = ft_strlen(game->map[0]);
-		count_pecs(game);
-		is_map_format_correct(game);
-		are_map_paths_valid(argv, game);
-	}
-	
-	int	main(int argc, char **argv)
+int	flood_fill(t_app *game, char **map, int x, int y)
+{
+	static int	collectible = 0;
+
+	if (y < 0 || x < 0 || y >= game->rows_counter || x >= game->cols_counter || map[y][x] == '1')
+		return (0);
+	if (map[y][x] == 'C' || map[y][x] == 'E')
+		collectible++;
+	map[y][x] = '1';
+	flood_fill(game, map, x + 1, y);
+	flood_fill(game, map, x - 1, y);
+	flood_fill(game, map, x, y + 1);
+	flood_fill(game, map, x, y - 1);
+	if (collectible == (game->collectibles_counter + 1))
+		return (0);
+	else
+		return (1);
+}
+
+void	handler_map_validator(char **argv, t_app *game)
+{
+	game->rows_counter = count_lines(argv[1]);
+	init_map(argv[1], &game, game->rows_counter);
+	game->cols_counter = ft_strlen(game->map[0]);
+	count_key_tiles(&game);
+	map_tiles_checker(&game);
+	are_key_tiles_reachable(&game);
+}
+
+int	main(int argc, char **argv)
 {
 	t_app	game;
 
@@ -214,6 +241,6 @@ int	are_map_attributs_valide(char **map)
 	game_init(&game);
 	handler_map_validator(argv, &game);
 	//handler_game(&game);
-	//handler_exit_game(&game);
+	//handler_exits_counter_app(&game);
 	return (0);
 }

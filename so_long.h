@@ -18,8 +18,10 @@
 # include <stdlib.h>
 # include <fcntl.h>
 # include "minilibx-linux/mlx.h"
+# include "libft/libft.h"
+
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 1024
+# define BUFFER_SIZE 1024
 # endif
 
 typedef struct s_app
@@ -47,14 +49,18 @@ typedef struct s_app
 	int		coor_y;
 }	t_app;
 
-int			ft_strlen(char *str);
-void		ft_putstr_fd(char *s, int fd);
-int			is_it_ber(char *file_name);
-int			check_args(int argc, char **argv);
-void		game_init(t_app *game);
-char		*ft_strchr(const char *s, int c);
-char		*get_next_line(int fd);
-char		*ft_strdup(const char *s);
-char		*ft_strjoin(char *s1, const char *s2);
+int		is_it_ber(char *file_name);
+int		check_args(int argc, char **argv);
+void	game_init(t_app *game);
+int		count_lines(char *argv);
+void	count_tiles(t_app *game);
+int		init_map(char *argv, t_app *game, int rows_counter);
+void	count_key_tiles(t_app *game);
+int		map_tiles_checker(t_app *game);
+int		check_row_length(char **map);
+int		is_map_surrounded_by_1(t_app *game);
+void	free_map(char **map, t_app *game);
+int		are_map_attributs_valide(char **map);
+void	handler_map_validator(char **argv, t_app *game);
 
 #endif
