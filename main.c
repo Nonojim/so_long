@@ -12,6 +12,25 @@
 
 #include "so_long.h"
 
+void	free_map(char **map, t_app *game)
+{
+	int i;
+	
+	if (!map)
+	{
+		write(2, "ERROR: free_map, empty map\n", 27);
+		return ;
+	}
+	i = 0;
+	while (i < game->rows_counter)
+	{
+		free(map[i]);
+		map[i] = NULL;
+		i++;
+	}
+	free(map);
+}
+
 int	count_lines(char *argv)
 {
 	char	*line;
@@ -104,7 +123,7 @@ int	map_tiles_checker(t_app *game)
 	}
 	if (game->collectibles_counter == 0 || game->players_counter != 1 || game->exits_counter != 1)
 	{
-		write(1, "ERROR : map rules not respected.\n", 33);
+		write(2, "ERROR : map rules not respected.\n", 33);
 		free_map(game->map, game);
 		(exit(1));
 	}
@@ -122,7 +141,7 @@ int	check_row_length(char **map)
 	{
 		if (ft_strlen(map[0]) != ft_strlen(map[i]))
 		{
-			write(1, "ERROR : map has rows with iregular lenth.\n", 42);
+			write(2, "ERROR : map has rows with iregular lenth.\n", 42);
 			return (1);
 		}
 		i++;
@@ -146,37 +165,19 @@ int	is_map_surrounded_by_1(t_app *game)
 	while (j < cols_counter)
 	{
 		if (game->map[0][j] != '1' || game->map[rows_counter - 1][j] != '1')
-			return (write(1, "1 ERROR : invalid surrounded walls\n", 35), 1);
+			return (write(2, "1 ERROR : invalid surrounded walls\n", 35), 1);
 		j++;
 	}
 	i = 1;
 	while (i < rows_counter - 1)
 	{
 		if (game->map[i][0] != '1' || game->map[i][cols_counter - 1] != '1')
-			return (write(1, "2 ERROR : invalid surrounded walls\n", 35), 1);
+			return (write(2, "2 ERROR : invalid surrounded walls\n", 35), 1);
 		i++;
 	}
 	return (0);
 }
 
-void	free_map(char **map, t_app *game)
-{
-	int i;
-	
-	if (!map)
-	{
-		write(1, "ERROR: free_map, empty map\n", 27);
-		return ;
-	}
-	i = 0;
-	while (i < game->rows_counter)
-	{
-		free(map[i]);
-		map[i] = NULL;
-		i++;
-	}
-	free(map);
-}
 
 int	are_map_attributs_valide(char **map)
 {
@@ -194,7 +195,7 @@ int	are_map_attributs_valide(char **map)
 			if (map[i][j] != 'P' && map[i][j] != 'E' && map[i][j]
 				!= 'C' && map[i][j] != '0' && map[i][j] != '1')
 				{
-					write(1, "ERROR : map has invalide attributs.\n", 36);
+					write(2, "ERROR : map has invalide attributs.\n", 36);
 					return (1);
 				}
 				j++;
@@ -208,29 +209,67 @@ int	flood_fill(t_app *game, char **map, int x, int y)
 {
 	static int	collectible = 0;
 
-	if (y < 0 || x < 0 || y >= game->rows_counter || x >= game->cols_counter || map[y][x] == '1')
+	if (y < 0 || x < 0 || y >= game->rows_counter || x >= game->cols_counter || map[y][x] == '1' || map[y][x] == 'E')
 		return (0);
-	if (map[y][x] == 'C' || map[y][x] == 'E')
+	if (map[y][x] == 'C')
 		collectible++;
 	map[y][x] = '1';
 	flood_fill(game, map, x + 1, y);
 	flood_fill(game, map, x - 1, y);
 	flood_fill(game, map, x, y + 1);
 	flood_fill(game, map, x, y - 1);
-	if (collectible == (game->collectibles_counter + 1))
+	if (collectible == (game->collectibles_counter))
 		return (0);
 	else
 		return (1);
 }
+void	get_player_xy(t_app *game)
+{
+	int	x;
+	int	y;
+
+	y = 0;
+	while (y < game->rows_counter)
+	{
+		x = 0;
+		while (x < game->cols_counter)
+		{
+			if (game->map[y][x] == 'P')
+			{
+				game->coor_x = x;
+				game->coor_y = y;
+				break ;
+			}
+			x++;
+		}
+		y++;
+	}
+}
+void	are_key_tiles_reachable(t_app *game, char **argv)
+{
+	t_app tmp;
+
+	game_init(&tmp);
+	init_map(argv[1], &tmp, game->rows_counter);
+	get_player_xy(game);
+	if (flood_fill(game, tmp.map, game->coor_x, game->coor_y) == 1)
+	{
+		ft_putstr_fd("Error !, key tiles not reachable\n", 2);
+		free_map(tmp.map, game);
+		free_map(game->map, game);
+		exit(1);
+	}
+	free_map(tmp.map, &tmp);
+} 
 
 void	handler_map_validator(char **argv, t_app *game)
 {
 	game->rows_counter = count_lines(argv[1]);
-	init_map(argv[1], &game, game->rows_counter);
+	init_map(argv[1], game, game->rows_counter);
 	game->cols_counter = ft_strlen(game->map[0]);
-	count_key_tiles(&game);
-	map_tiles_checker(&game);
-	are_key_tiles_reachable(&game);
+	count_key_tiles(game);
+	map_tiles_checker(game);
+	are_key_tiles_reachable(game, argv);
 }
 
 int	main(int argc, char **argv)

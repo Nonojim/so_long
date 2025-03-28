@@ -31,18 +31,18 @@ int	check_args(int argc, char **argv)
 
 	if (argc != 2)
 	{
-		ft_putstr_fd("Error !, follow example: <./so_long> <map.ber>\n", 1);
+		ft_putstr_fd("Error !, follow example: <./so_long> <map.ber>\n", 2);
 		exit (1);
 	}
 	if (is_it_ber(argv[1]) != 1)
 	{
-		ft_putstr_fd("Error !, not a .ber\n", 1);
+		ft_putstr_fd("Error !, not a .ber\n", 2);
 		exit (1);
 	}
 	fd = open(argv[1], O_RDONLY);
 	if (fd < 0)
 	{
-		ft_putstr_fd("Error !, failed to open .ber file\n", 1);
+		ft_putstr_fd("Error !, failed to open .ber file\n", 2);
 		close(fd);
 		exit (1);
 	}

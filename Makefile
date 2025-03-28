@@ -23,12 +23,12 @@ all: $(NAME)
 #NAME  "@"hide in command in terminal
 $(NAME): $(OBJS)
 	@make -C libft/
-	gcc $(OBJS) $(LIBFT) $(INC_MLX) -o $(NAME)
+	gcc -g $(OBJS) $(LIBFT) $(INC_MLX) -o $(NAME)
 # "%.o" rule compie .c file into corresponding .o file
 # "%" is a wildcard for "name of the files without extension"
 # $@ = target, here target = .o "$<" = first dependencies here = .c
 %.o: %.c
-	$(CC) $(CPPFLAGS) $(CCFLAGS) -Iminilibx-linux -o $@ -c $<
+	$(CC) -g $(CPPFLAGS) $(CCFLAGS) -Iminilibx-linux -o $@ -c $<
 #clean delete all .o files
 clean:
 	$(RM) $(OBJS)
