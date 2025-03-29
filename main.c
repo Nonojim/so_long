@@ -12,218 +12,141 @@
 
 #include "so_long.h"
 
-void	free_map(char **map, t_app *game)
+int	handler_exit_app(t_app *game)
 {
-	int i;
-	
-	if (!map)
-	{
-		write(2, "ERROR: free_map, empty map\n", 27);
-		return ;
-	}
-	i = 0;
-	while (i < game->rows_counter)
-	{
-		free(map[i]);
-		map[i] = NULL;
-		i++;
-	}
-	free(map);
+	free_map(game->map, game);
+	mlx_destroy_image(game->mlx, game->img_player_up);
+	mlx_destroy_image(game->mlx, game->img_player_down);
+	mlx_destroy_image(game->mlx, game->img_player_left);
+	mlx_destroy_image(game->mlx, game->img_player_right);
+	mlx_destroy_image(game->mlx, game->img_exit);
+	mlx_destroy_image(game->mlx, game->img_exit_open);
+	mlx_destroy_image(game->mlx, game->img_collectible);
+	mlx_destroy_image(game->mlx, game->img_island);
+	mlx_destroy_image(game->mlx, game->img_background);
+	mlx_destroy_image(game->mlx, game->img_wall);
+	mlx_destroy_window(game->mlx, game->win);
+	mlx_destroy_display(game->mlx);
+	free(game->mlx);
+	exit (0);
 }
 
-int	count_lines(char *argv)
+int	is_next_pos_ok(t_app *game, int x, int y)
 {
-	char	*line;
-	int		lines_counter;
-	int		fd;
-	
-	lines_counter = 0;
-	fd = open(argv, O_RDONLY);
-	if (fd == -1)
-		return (-1);
-	while (1)
-	{
-		line = get_next_line(fd);
-		if (!line)
-			break ;
-		free(line);
-		lines_counter++;
-	}
-	close(fd);
-	return (lines_counter);
-}
-int	init_map(char *argv, t_app *game, int rows_counter)
-{
-	char	*line;
-	int		i;
-	int		fd;
-	
-	i = 0;
-	line = 0;
-	game->map = malloc(sizeof(char *) * (rows_counter + 1));
-	if (!game->map)
-		return (write(2, "Error: malloc failed\n", 21), 1);
-	fd = open(argv, O_RDONLY);
-	while (i < rows_counter)
-	{
-		line = get_next_line(fd);
-		if (!line)
-			break ;
-		game->map[i] = ft_strtrim(line, "\n");
-		free(line);
-		if (!game->map[i])
-			return (write(2, "Error: malloc failed in ft_strtrim\n", 35),
-				free_map(game->map, game), close(fd), 0);
-		i++;
-	}
-	game->map[i] = NULL;
-	close(fd);
-	return (0);
-}
-
-void	count_key_tiles(t_app *game)
-{
-	int	i;
-	int	j;
-	
-	i = 0;
-	while (game->map[i])
-	{
-		j = 0;
-		while (game->map[i][j] != '\0')
-		{
-			if (game->map[i][j] == 'P')
-			game->players_counter++;
-			else if (game->map[i][j] == 'E')
-			game->exits_counter++;
-			else if (game->map[i][j] == 'C')
-			game->collectibles_counter++;
-			j++;
-		}
-		i++;
-	}
-}
-
-int	map_tiles_checker(t_app *game)
-{
-	if (check_row_length(game->map) == 1)
-	{
-		free_map(game->map, game);
-		(exit(1));
-	}
-	if (is_map_surrounded_by_1(game) == 1)
-	{
-		free_map(game->map, game);
-		(exit(1));
-	}
-	if (are_map_attributs_valide(game->map) == 1)
-	{
-		free_map(game->map, game);
-		(exit(1));
-	}
-	if (game->collectibles_counter == 0 || game->players_counter != 1 || game->exits_counter != 1)
-	{
-		write(2, "ERROR : map rules not respected.\n", 33);
-		free_map(game->map, game);
-		(exit(1));
-	}
-	return (0);
-}
-
-int	check_row_length(char **map)
-{
-	int	i;
-	
-	if (!map)
+	if (game->map[y][x] == '0')
+		return (0);
+	if (game->map[y][x] == '1')
 		return (1);
-	i = 1;
-	while (map[i])
-	{
-		if (ft_strlen(map[0]) != ft_strlen(map[i]))
-		{
-			write(2, "ERROR : map has rows with iregular lenth.\n", 42);
-			return (1);
-		}
-		i++;
-	}
-	return (0);
-}
-	
-int	is_map_surrounded_by_1(t_app *game)
-{
-	int	i;
-	int	j;
-	int	rows_counter;
-	int	cols_counter;
-	
-	i = 0;
-	j = 0;
-	rows_counter = game->rows_counter;
-	cols_counter = game->cols_counter;
-	while (game->map[i])
-	i++;
-	while (j < cols_counter)
-	{
-		if (game->map[0][j] != '1' || game->map[rows_counter - 1][j] != '1')
-			return (write(2, "1 ERROR : invalid surrounded walls\n", 35), 1);
-		j++;
-	}
-	i = 1;
-	while (i < rows_counter - 1)
-	{
-		if (game->map[i][0] != '1' || game->map[i][cols_counter - 1] != '1')
-			return (write(2, "2 ERROR : invalid surrounded walls\n", 35), 1);
-		i++;
-	}
-	return (0);
-}
-
-
-int	are_map_attributs_valide(char **map)
-{
-	int	i;
-	int	j;
-	
-	if (!map)
+	if (game->map[y][x] == 'C')
+		return (game->collected++, 0);
+	if (game->map[y][x] == 'E' && (game->collected != game->collectibles_counter))
 		return (1);
-	i = 0;
-	while (map[i])
+	if (game->map[y][x] == 'E' && (game->collected == game->collectibles_counter))
 	{
-		j = 0;
-		while (map[i][j] != '\0')
-		{
-			if (map[i][j] != 'P' && map[i][j] != 'E' && map[i][j]
-				!= 'C' && map[i][j] != '0' && map[i][j] != '1')
-				{
-					write(2, "ERROR : map has invalide attributs.\n", 36);
-					return (1);
-				}
-				j++;
-			}
-			i++;
-		}
-		return (0);
+		ft_putstr_fd("ur drunk\n", 1);
+		handler_exit_app(game);
+	}
+	return (0);
 }
 
-int	flood_fill(t_app *game, char **map, int x, int y)
+void	update_p_move_img(t_app *game, int nx, int ny, char key)
 {
-	static int	collectible = 0;
+	int	x;
+	int	y;
 
-	if (y < 0 || x < 0 || y >= game->rows_counter || x >= game->cols_counter || map[y][x] == '1' || map[y][x] == 'E')
-		return (0);
-	if (map[y][x] == 'C')
-		collectible++;
-	map[y][x] = '1';
-	flood_fill(game, map, x + 1, y);
-	flood_fill(game, map, x - 1, y);
-	flood_fill(game, map, x, y + 1);
-	flood_fill(game, map, x, y - 1);
-	if (collectible == (game->collectibles_counter))
-		return (0);
+	x = game->coor_x * 32;
+	y = game->coor_y * 32;
+	nx = nx * 32;
+	ny = ny * 32;
+	if (game->map[game->coor_y][game->coor_x] == 'C')
+		mlx_put_image_to_window(game->mlx, game->win, game->img_island, x, y);
+	else if (game->map[game->coor_y][game->coor_x] == 'I')
+		mlx_put_image_to_window(game->mlx, game->win, game->img_island, x, y);
 	else
-		return (1);
+		mlx_put_image_to_window(game->mlx, game->win, game->img_background, x, y);
+	if (key == 'W')
+		mlx_put_image_to_window(game->mlx, game->win, game->img_player_up, nx, ny);
+	if (key == 'S')
+		mlx_put_image_to_window(game->mlx, game->win, game->img_player_down, nx, ny);
+	if (key == 'A')
+		mlx_put_image_to_window(game->mlx, game->win, game->img_player_left, nx, ny);
+	if (key == 'D')
+		mlx_put_image_to_window(game->mlx, game->win, game->img_player_right, nx, ny);
+	game->moves_counter++;
+	ft_putstr_fd("moves_counter: ", 1);
+	ft_putnbr_fd(game->moves_counter, 1);
+	ft_putstr_fd("\n", 1);
 }
-void	get_player_xy(t_app *game)
+
+void	update_player_coordinates(t_app *game, int x, int y)
+{
+	game->coor_x = x;
+	game->coor_y = y;
+}
+
+void	move_player(t_app *game, char key, int x, int y)
+{
+	if (key == 'W')
+	{
+		update_p_move_img(game, x, (y - 1), 'W');
+		update_player_coordinates(game, x, (y - 1));
+	}
+	if (key == 'A')
+	{
+		update_p_move_img(game, (x - 1), y, 'A');
+		update_player_coordinates(game, (x - 1), y);
+	}
+	if (key == 'S')
+	{
+		update_p_move_img(game, x, (y + 1), 'S');
+		update_player_coordinates(game, x, (y + 1));
+	}
+	if (key == 'D')
+	{
+		update_p_move_img(game, (x + 1), y, 'D');
+		update_player_coordinates(game, (x + 1), y);
+	}
+	printf("game->map[y][x] == %c", game->map[y][x]);
+	if (game->map[y][x] == 'C' || game->map[y][x] == 'I')
+		game->map[y][x] = 'I';
+	else
+		game->map[y][x] = '0';
+}
+
+int	handler_player_moves_counter(int key, void *param)
+{
+	int		x;
+	int		y;
+	t_app	*game;
+
+	game = (t_app *)param;
+	x = game->coor_x;
+	y = game->coor_y;
+	if (key == XK_Escape)
+		handler_exit_app(game);
+	else if ((key == XK_w || key == XK_Up)
+		&& is_next_pos_ok(game, x, (y - 1)) == 0)
+		move_player(game, 'W', x, y);
+	else if ((key == XK_a || key == XK_Left)
+		&& is_next_pos_ok(game, (x - 1), y) == 0)
+		move_player(game, 'A', x, y);
+	else if ((key == XK_s || key == XK_Down)
+		&& is_next_pos_ok(game, x, (y + 1)) == 0)
+		move_player(game, 'S', x, y);
+	else if ((key == XK_d || key == XK_Right)
+		&& is_next_pos_ok(game, (x + 1), y) == 0)
+		move_player(game, 'D', x, y);
+	return (0);
+}
+
+static void	draw_img(t_app *game, void *img, int x, int y)
+{
+	x = x * 32;
+	y = y * 32;
+	mlx_put_image_to_window(game->mlx, game->win, img, x, y);
+}
+
+void	handler_map_draw(t_app *game)
 {
 	int	x;
 	int	y;
@@ -235,32 +158,61 @@ void	get_player_xy(t_app *game)
 		while (x < game->cols_counter)
 		{
 			if (game->map[y][x] == 'P')
+				draw_img(game, game->img_player_right, x, y);
+			else if (game->map[y][x] == 'E')
 			{
-				game->coor_x = x;
-				game->coor_y = y;
-				break ;
+				//if (game->img_exit_open == NULL || game->img_exit == NULL)
+				//{
+    			//	fprintf(stderr, "One of the exit images is not initialized.\n");
+    			//	exit(EXIT_FAILURE);
+				//}
+				//if (game->collectibles_counter == game->collected)
+				//	draw_img(game, game->img_exit_open, x, y);
+				//else
+				draw_img(game, game->img_exit, x, y);
 			}
+			else if (game->map[y][x] == 'C')
+				draw_img(game, game->img_island, x, y);
+			else if (game->map[y][x] == '1')
+				draw_img(game, game->img_wall, x, y);
+			else if (game->map[y][x] == '0')
+				draw_img(game, game->img_background, x, y);
 			x++;
 		}
 		y++;
 	}
 }
-void	are_key_tiles_reachable(t_app *game, char **argv)
-{
-	t_app tmp;
 
-	game_init(&tmp);
-	init_map(argv[1], &tmp, game->rows_counter);
-	get_player_xy(game);
-	if (flood_fill(game, tmp.map, game->coor_x, game->coor_y) == 1)
-	{
-		ft_putstr_fd("Error !, key tiles not reachable\n", 2);
-		free_map(tmp.map, game);
-		free_map(game->map, game);
-		exit(1);
-	}
-	free_map(tmp.map, &tmp);
-} 
+void	init_images(t_app *game)
+{
+	int	w;
+	int	h;
+
+	w = 32;
+	h = 32;
+	game->img_player_up = mlx_xpm_file_to_image(game->mlx, IMG_PLAYER_UP, &w, &h);
+	game->img_player_down = mlx_xpm_file_to_image(game->mlx, IMG_PLAYER_DOWN, &w, &h);
+	game->img_player_left = mlx_xpm_file_to_image(game->mlx, IMG_PLAYER_LEFT, &w, &h);
+	game->img_player_right = mlx_xpm_file_to_image(game->mlx, IMG_PLAYER_RIGHT, &w, &h);
+	game->img_exit = mlx_xpm_file_to_image(game->mlx, IMG_EXIT, &w, &h);
+	game->img_exit_open = mlx_xpm_file_to_image(game->mlx, IMG_EXIT_OPEN, &w, &h);
+	game->img_collectible = mlx_xpm_file_to_image(game->mlx, IMG_COLLECTIBLE, &w, &h);
+	game->img_island = mlx_xpm_file_to_image(game->mlx, IMG_ISLAND, &w, &h);
+	game->img_wall = mlx_xpm_file_to_image(game->mlx, IMG_WALL, &w, &h);
+	game->img_background = mlx_xpm_file_to_image(game->mlx, IMG_BACKGROUND, &w, &h);
+}
+
+void	handler_game(t_app *game)
+{
+	game->mlx = mlx_init();
+	init_images(game);
+	game->win = mlx_new_window(game->mlx, game->cols_counter * 32,
+			game->rows_counter * 32, "Non sense simulator");
+	handler_map_draw(game);
+	mlx_hook(game->win, KeyPress, KeyPressMask, handler_player_moves_counter, game);
+	mlx_hook(game->win, DestroyNotify, ButtonPressMask,	&handler_exit_app, game);
+	mlx_loop(game->mlx);
+}
 
 void	handler_map_validator(char **argv, t_app *game)
 {
@@ -279,7 +231,7 @@ int	main(int argc, char **argv)
 	check_args(argc, argv);
 	game_init(&game);
 	handler_map_validator(argv, &game);
-	//handler_game(&game);
-	//handler_exits_counter_app(&game);
+	handler_game(&game);
+	handler_exit_app(&game);
 	return (0);
 }

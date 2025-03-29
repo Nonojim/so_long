@@ -36,3 +36,32 @@ void	game_init(t_app *game)
 	game->coor_x = 0;
 	game->coor_y = 0;
 }
+
+int	init_map(char *argv, t_app *game, int rows_counter)
+{
+	char	*line;
+	int		i;
+	int		fd;
+	
+	i = 0;
+	line = 0;
+	game->map = malloc(sizeof(char *) * (rows_counter + 1));
+	if (!game->map)
+		return (ft_putstr_fd("Error\nmalloc failed\n", 2), 1);
+	fd = open(argv, O_RDONLY);
+	while (i < rows_counter)
+	{
+		line = get_next_line(fd);
+		if (!line)
+			break ;
+		game->map[i] = ft_strtrim(line, "\n");
+		free(line);
+		if (!game->map[i])
+			return (ft_putstr_fd("Error\nmalloc failed in ft_strtrim\n", 2),
+				free_map(game->map, game), close(fd), 1);
+		i++;
+	}
+	game->map[i] = NULL;
+	close(fd);
+	return (0);
+}
