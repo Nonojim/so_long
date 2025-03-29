@@ -6,7 +6,7 @@
 /*   By: npederen <npederen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 15:44:00 by npederen          #+#    #+#             */
-/*   Updated: 2025/03/29 16:59:43 by npederen         ###   ########.fr       */
+/*   Updated: 2025/03/29 19:09:27 by npederen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,8 @@ void	count_key_tiles(t_app *game)
 		i++;
 	}
 }
+
+
 
 void	get_player_xy(t_app *game)
 {

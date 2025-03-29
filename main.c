@@ -23,12 +23,36 @@ int	handler_exit_app(t_app *game)
 	mlx_destroy_image(game->mlx, game->img_exit_open);
 	mlx_destroy_image(game->mlx, game->img_collectible);
 	mlx_destroy_image(game->mlx, game->img_island);
+	mlx_destroy_image(game->mlx, game->img_player_island);
 	mlx_destroy_image(game->mlx, game->img_background);
 	mlx_destroy_image(game->mlx, game->img_wall);
 	mlx_destroy_window(game->mlx, game->win);
 	mlx_destroy_display(game->mlx);
 	free(game->mlx);
 	exit (0);
+}
+
+void	get_exit_xy(t_app *game)
+{
+	int	x;
+	int	y;
+
+	y = 0;
+	while (y < game->rows_counter)
+	{
+		x = 0;
+		while (x < game->cols_counter)
+		{
+			if (game->map[y][x] == 'E')
+			{
+				game->exit_coor_x = x;
+				game->exit_coor_y = y;
+				break ;
+			}
+			x++;
+		}
+		y++;
+	}
 }
 
 int	is_next_pos_ok(t_app *game, int x, int y)
@@ -38,7 +62,15 @@ int	is_next_pos_ok(t_app *game, int x, int y)
 	if (game->map[y][x] == '1')
 		return (1);
 	if (game->map[y][x] == 'C')
-		return (game->collected++, 0);
+	{
+		game->collected++;
+		if (game->collected == game->collectibles_counter)
+		{
+			get_exit_xy(game);
+			mlx_put_image_to_window(game->mlx, game->win, game->img_exit_open, (game->exit_coor_x * 32), (game->exit_coor_y * 32));
+		}
+		return (0);
+	}
 	if (game->map[y][x] == 'E' && (game->collected != game->collectibles_counter))
 		return (1);
 	if (game->map[y][x] == 'E' && (game->collected == game->collectibles_counter))
@@ -53,29 +85,31 @@ void	update_p_move_img(t_app *game, int nx, int ny, char key)
 {
 	int	x;
 	int	y;
+	int	nxpx;
+	int	nypx;
 
 	x = game->coor_x * 32;
 	y = game->coor_y * 32;
-	nx = nx * 32;
-	ny = ny * 32;
-	if (game->map[game->coor_y][game->coor_x] == 'C')
-		mlx_put_image_to_window(game->mlx, game->win, game->img_island, x, y);
-	else if (game->map[game->coor_y][game->coor_x] == 'I')
+	nxpx = nx * 32;
+	nypx = ny * 32;
+	if (game->map[game->coor_y][game->coor_x] == 'C' || game->map[game->coor_y][game->coor_x] == 'I')
 		mlx_put_image_to_window(game->mlx, game->win, game->img_island, x, y);
 	else
 		mlx_put_image_to_window(game->mlx, game->win, game->img_background, x, y);
-	if (key == 'W')
-		mlx_put_image_to_window(game->mlx, game->win, game->img_player_up, nx, ny);
-	if (key == 'S')
-		mlx_put_image_to_window(game->mlx, game->win, game->img_player_down, nx, ny);
-	if (key == 'A')
-		mlx_put_image_to_window(game->mlx, game->win, game->img_player_left, nx, ny);
-	if (key == 'D')
-		mlx_put_image_to_window(game->mlx, game->win, game->img_player_right, nx, ny);
+	if (game->map[ny][nx] == 'C' || game->map[ny][nx] == 'I')
+		mlx_put_image_to_window(game->mlx, game->win, game->img_player_island, nxpx, nypx);
+	else if (key == 'W')
+		mlx_put_image_to_window(game->mlx, game->win, game->img_player_up, nxpx, nypx);
+	else if (key == 'S')
+		mlx_put_image_to_window(game->mlx, game->win, game->img_player_down, nxpx, nypx);
+	else if (key == 'A')
+		mlx_put_image_to_window(game->mlx, game->win, game->img_player_left, nxpx, nypx);
+	else if (key == 'D')
+		mlx_put_image_to_window(game->mlx, game->win, game->img_player_right, nxpx, nypx);
 	game->moves_counter++;
 	ft_putstr_fd("moves_counter: ", 1);
 	ft_putnbr_fd(game->moves_counter, 1);
-	ft_putstr_fd("\n", 1);
+	write(1, "\n", 1);
 }
 
 void	update_player_coordinates(t_app *game, int x, int y)
@@ -106,7 +140,6 @@ void	move_player(t_app *game, char key, int x, int y)
 		update_p_move_img(game, (x + 1), y, 'D');
 		update_player_coordinates(game, (x + 1), y);
 	}
-	printf("game->map[y][x] == %c", game->map[y][x]);
 	if (game->map[y][x] == 'C' || game->map[y][x] == 'I')
 		game->map[y][x] = 'I';
 	else
@@ -160,19 +193,9 @@ void	handler_map_draw(t_app *game)
 			if (game->map[y][x] == 'P')
 				draw_img(game, game->img_player_right, x, y);
 			else if (game->map[y][x] == 'E')
-			{
-				//if (game->img_exit_open == NULL || game->img_exit == NULL)
-				//{
-    			//	fprintf(stderr, "One of the exit images is not initialized.\n");
-    			//	exit(EXIT_FAILURE);
-				//}
-				//if (game->collectibles_counter == game->collected)
-				//	draw_img(game, game->img_exit_open, x, y);
-				//else
 				draw_img(game, game->img_exit, x, y);
-			}
 			else if (game->map[y][x] == 'C')
-				draw_img(game, game->img_island, x, y);
+				draw_img(game, game->img_collectible, x, y);
 			else if (game->map[y][x] == '1')
 				draw_img(game, game->img_wall, x, y);
 			else if (game->map[y][x] == '0')
@@ -198,6 +221,7 @@ void	init_images(t_app *game)
 	game->img_exit_open = mlx_xpm_file_to_image(game->mlx, IMG_EXIT_OPEN, &w, &h);
 	game->img_collectible = mlx_xpm_file_to_image(game->mlx, IMG_COLLECTIBLE, &w, &h);
 	game->img_island = mlx_xpm_file_to_image(game->mlx, IMG_ISLAND, &w, &h);
+	game->img_player_island = mlx_xpm_file_to_image(game->mlx, IMG_PLAYER_ISLAND, &w, &h);
 	game->img_wall = mlx_xpm_file_to_image(game->mlx, IMG_WALL, &w, &h);
 	game->img_background = mlx_xpm_file_to_image(game->mlx, IMG_BACKGROUND, &w, &h);
 }

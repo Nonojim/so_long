@@ -23,7 +23,10 @@ void	game_init(t_app *game)
 	game->img_background = 0;
 	game->img_wall = 0;
 	game->img_collectible = 0;
+	game->img_island = 0;
+	game->img_player_island = 0;
 	game->img_exit = 0;
+	game->img_exit_open = 0;
 	game->map = 0;
 	game->tmp_map = 0;
 	game->rows_counter = 0;
@@ -35,6 +38,8 @@ void	game_init(t_app *game)
 	game->collected = 0;
 	game->coor_x = 0;
 	game->coor_y = 0;
+	game->exit_coor_x = 0;
+	game->exit_coor_y = 0;
 }
 
 int	init_map(char *argv, t_app *game, int rows_counter)

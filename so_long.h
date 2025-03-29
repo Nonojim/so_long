@@ -34,6 +34,7 @@ typedef struct s_app
 	void	*img_wall;
 	void	*img_collectible;
 	void	*img_island;
+	void	*img_player_island;
 	void	*img_exit;
 	void	*img_exit_open;
 	char	**map;
@@ -47,6 +48,8 @@ typedef struct s_app
 	int		collected;
 	int		coor_x;
 	int		coor_y;
+	int		exit_coor_x;
+	int		exit_coor_y;
 }	t_app;
 
 int		is_it_ber(char *file_name);
@@ -70,7 +73,7 @@ void	handler_map_validator(char **argv, t_app *game);
 # define IMG_PLAYER_DOWN "./images/boatD.xpm"
 # define IMG_PLAYER_LEFT "./images/boatL.xpm"
 # define IMG_PLAYER_RIGHT "./images/boatR.xpm"
-# define IMG_PLAYER_ISLAND "./images/petitviking.xpm"
+# define IMG_PLAYER_ISLAND "./images/vikingisland.xpm"
 # define IMG_EXIT "./images/baril_vide2.xpm"
 # define IMG_EXIT_OPEN "./images/baril_plein2.xpm"
 # define IMG_COLLECTIBLE "./images/collectible.xpm"
