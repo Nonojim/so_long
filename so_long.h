@@ -76,7 +76,7 @@ void	handler_map_validator(char **argv, t_app *game);
 # define IMG_PLAYER_ISLAND "./images/vikingisland.xpm"
 # define IMG_EXIT "./images/baril_vide2.xpm"
 # define IMG_EXIT_OPEN "./images/baril_plein2.xpm"
-# define IMG_COLLECTIBLE "./images/collectible.xpm"
+# define IMG_COLLECTIBLE "./images/big_collectible.xpm"
 # define IMG_ISLAND "./images/island.xpm"
 # define IMG_WALL "./images/wall.xpm"
 # define IMG_BACKGROUND "./images/water.xpm"
