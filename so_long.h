@@ -38,7 +38,6 @@ typedef struct s_app
 	void	*img_exit;
 	void	*img_exit_open;
 	char	**map;
-	char	**tmp_map;
 	int		rows_counter;
 	int		cols_counter;
 	int		players_counter;
@@ -52,22 +51,33 @@ typedef struct s_app
 	int		exit_coor_y;
 }	t_app;
 
-int		is_it_ber(char *file_name);
-int		check_args(int argc, char **argv);
 void	game_init(t_app *game);
 int		init_map(char *argv, t_app *game, int rows_counter);
+void	init_images(t_app *game);
+int		is_it_ber(char *file_name);
+int		check_args(int argc, char **argv);
+void	handler_map_validator(char **argv, t_app *game);
+void	handler_game(t_app *game);
+void	handler_map_draw(t_app *game);
+int		handler_player_moves_counter(int key, void *param);
+void	get_exit_xy(t_app *game);
+int		is_next_pos_ok(t_app *game, int x, int y);
+void	update_boat_move_img(t_app *game, int nx, int ny, char key);
+void	update_p_move_img(t_app *game, int nx, int ny, char key);
+void	move_player(t_app *game, char key, int x, int y);
 int		count_lines(char *argv);
-void	count_tiles(t_app *game);
 void	count_key_tiles(t_app *game);
 void	get_player_xy(t_app *game);
 int		flood_fill(t_app *game, char **map, int x, int y);
 void	are_key_tiles_reachable(t_app *game, char **argv);
 int		check_row_length(char **map);
 int		is_map_walled(t_app *game);
-int		are_map_tiles_recognize(char **map);
+int		are_map_tiles_recognized(char **map);
 int		map_tiles_checker(t_app *game);
 void	free_map(char **map, t_app *game);
-void	handler_map_validator(char **argv, t_app *game);
+int		handler_exit_app(t_app *game);
+void	draw_img(t_app *game, void *img, int x, int y);
+void	update_player_coordinates(t_app *game, int x, int y);
 
 # define IMG_PLAYER_UP "./images/boatU.xpm"
 # define IMG_PLAYER_DOWN "./images/boatD.xpm"
@@ -80,6 +90,5 @@ void	handler_map_validator(char **argv, t_app *game);
 # define IMG_ISLAND "./images/island.xpm"
 # define IMG_WALL "./images/wall.xpm"
 # define IMG_BACKGROUND "./images/water.xpm"
-
 
 #endif

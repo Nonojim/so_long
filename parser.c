@@ -6,7 +6,7 @@
 /*   By: npederen <npederen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 15:44:00 by npederen          #+#    #+#             */
-/*   Updated: 2025/03/29 19:09:27 by npederen         ###   ########.fr       */
+/*   Updated: 2025/03/29 21:36:52 by npederen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	count_lines(char *argv)
 	char	*line;
 	int		lines_counter;
 	int		fd;
-	
+
 	lines_counter = 0;
 	fd = open(argv, O_RDONLY);
 	if (fd == -1)
@@ -43,7 +43,7 @@ void	count_key_tiles(t_app *game)
 {
 	int	i;
 	int	j;
-	
+
 	i = 0;
 	while (game->map[i])
 	{
@@ -51,18 +51,16 @@ void	count_key_tiles(t_app *game)
 		while (game->map[i][j] != '\0')
 		{
 			if (game->map[i][j] == 'P')
-			game->players_counter++;
+				game->players_counter++;
 			else if (game->map[i][j] == 'E')
-			game->exits_counter++;
+				game->exits_counter++;
 			else if (game->map[i][j] == 'C')
-			game->collectibles_counter++;
+				game->collectibles_counter++;
 			j++;
 		}
 		i++;
 	}
 }
-
-
 
 void	get_player_xy(t_app *game)
 {
@@ -91,7 +89,8 @@ int	flood_fill(t_app *game, char **map, int x, int y)
 {
 	static int	collectible = 0;
 
-	if (y < 0 || x < 0 || y >= game->rows_counter || x >= game->cols_counter || map[y][x] == '1' || map[y][x] == 'E')
+	if (y < 0 || x < 0 || y >= game->rows_counter || x >= game->cols_counter \
+	|| map[y][x] == '1' || map[y][x] == 'E')
 		return (0);
 	if (map[y][x] == 'C')
 		collectible++;
@@ -106,10 +105,9 @@ int	flood_fill(t_app *game, char **map, int x, int y)
 		return (1);
 }
 
-
 void	are_key_tiles_reachable(t_app *game, char **argv)
 {
-	t_app tmp;
+	t_app	tmp;
 
 	game_init(&tmp);
 	if (init_map(argv[1], &tmp, game->rows_counter) == 1)

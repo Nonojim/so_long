@@ -6,7 +6,7 @@
 /*   By: npederen <npederen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 15:46:50 by npederen          #+#    #+#             */
-/*   Updated: 2025/03/29 16:58:09 by npederen         ###   ########.fr       */
+/*   Updated: 2025/03/29 21:40:26 by npederen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int	check_row_length(char **map)
 {
 	int	i;
-	
+
 	if (!map)
 		return (1);
 	i = 1;
@@ -30,20 +30,20 @@ int	check_row_length(char **map)
 	}
 	return (0);
 }
-	
+
 int	is_map_walled(t_app *game)
 {
 	int	i;
 	int	j;
 	int	rows_counter;
 	int	cols_counter;
-	
+
 	i = 0;
 	j = 0;
 	rows_counter = game->rows_counter;
 	cols_counter = game->cols_counter;
 	while (game->map[i])
-	i++;
+		i++;
 	while (j < cols_counter)
 	{
 		if (game->map[0][j] != '1' || game->map[rows_counter - 1][j] != '1')
@@ -60,11 +60,11 @@ int	is_map_walled(t_app *game)
 	return (0);
 }
 
-int	are_map_tiles_recognize(char **map)
+int	are_map_tiles_recognized(char **map)
 {
 	int	i;
 	int	j;
-	
+
 	if (!map)
 		return (1);
 	i = 0;
@@ -73,17 +73,17 @@ int	are_map_tiles_recognize(char **map)
 		j = 0;
 		while (map[i][j] != '\0')
 		{
-			if (map[i][j] != 'P' && map[i][j] != 'E' && map[i][j]
-				!= 'C' && map[i][j] != '0' && map[i][j] != '1')
-				{
-					ft_putstr_fd("Error\nmap has invalide attributs\n", 2);
-					return (1);
-				}
-				j++;
+			if (map[i][j] != 'P' && map[i][j] != 'E' && map[i][j] != 'C' \
+			&& map[i][j] != '0' && map[i][j] != '1')
+			{
+				ft_putstr_fd("Error\nmap has invalide attributs\n", 2);
+				return (1);
 			}
-			i++;
+			j++;
 		}
-		return (0);
+		i++;
+	}
+	return (0);
 }
 
 int	map_tiles_checker(t_app *game)
@@ -98,12 +98,13 @@ int	map_tiles_checker(t_app *game)
 		free_map(game->map, game);
 		(exit(1));
 	}
-	if (are_map_tiles_recognize(game->map) == 1)
+	if (are_map_tiles_recognized(game->map) == 1)
 	{
 		free_map(game->map, game);
 		(exit(1));
 	}
-	if (game->collectibles_counter == 0 || game->players_counter != 1 || game->exits_counter != 1)
+	if (game->collectibles_counter == 0 || game->players_counter != 1 \
+	|| game->exits_counter != 1)
 	{
 		ft_putstr_fd("Error\nmap rules not respected\n", 2);
 		free_map(game->map, game);

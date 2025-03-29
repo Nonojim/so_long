@@ -1,5 +1,5 @@
 #sources files
-SRC = main.c input_checker.c tiles_checker.c init.c parser.c utils.c
+SRC = main.c input_checker.c tiles_checker.c init.c parser.c move_player.c utils.c
 #append .o to each .c files in the SRC
 #OBJS := $(SRC:%.c=%.o)
 OBJS = ${SRC:.c=.o}

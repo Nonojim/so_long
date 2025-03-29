@@ -28,7 +28,6 @@ void	game_init(t_app *game)
 	game->img_exit = 0;
 	game->img_exit_open = 0;
 	game->map = 0;
-	game->tmp_map = 0;
 	game->rows_counter = 0;
 	game->cols_counter = 0;
 	game->players_counter = 0;
@@ -47,7 +46,7 @@ int	init_map(char *argv, t_app *game, int rows_counter)
 	char	*line;
 	int		i;
 	int		fd;
-	
+
 	i = 0;
 	line = 0;
 	game->map = malloc(sizeof(char *) * (rows_counter + 1));
@@ -69,4 +68,33 @@ int	init_map(char *argv, t_app *game, int rows_counter)
 	game->map[i] = NULL;
 	close(fd);
 	return (0);
+}
+
+void	init_images(t_app *game)
+{
+	int	size;
+
+	size = 32;
+	game->img_player_up = \
+	mlx_xpm_file_to_image(game->mlx, IMG_PLAYER_UP, &size, &size);
+	game->img_player_down \
+	= mlx_xpm_file_to_image(game->mlx, IMG_PLAYER_DOWN, &size, &size);
+	game->img_player_left \
+	= mlx_xpm_file_to_image(game->mlx, IMG_PLAYER_LEFT, &size, &size);
+	game->img_player_right \
+	= mlx_xpm_file_to_image(game->mlx, IMG_PLAYER_RIGHT, &size, &size);
+	game->img_exit \
+	= mlx_xpm_file_to_image(game->mlx, IMG_EXIT, &size, &size);
+	game->img_exit_open \
+	= mlx_xpm_file_to_image(game->mlx, IMG_EXIT_OPEN, &size, &size);
+	game->img_collectible \
+	= mlx_xpm_file_to_image(game->mlx, IMG_COLLECTIBLE, &size, &size);
+	game->img_island \
+	= mlx_xpm_file_to_image(game->mlx, IMG_ISLAND, &size, &size);
+	game->img_player_island \
+	= mlx_xpm_file_to_image(game->mlx, IMG_PLAYER_ISLAND, &size, &size);
+	game->img_wall \
+	= mlx_xpm_file_to_image(game->mlx, IMG_WALL, &size, &size);
+	game->img_background \
+	= mlx_xpm_file_to_image(game->mlx, IMG_BACKGROUND, &size, &size);
 }
