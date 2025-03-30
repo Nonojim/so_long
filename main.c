@@ -6,13 +6,13 @@
 /*   By: npederen <npederen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/22 13:33:15 by npederen          #+#    #+#             */
-/*   Updated: 2025/03/30 04:56:22 by npederen         ###   ########.fr       */
+/*   Updated: 2025/03/30 11:15:06 by npederen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
 
-void	handler_map_validator(char **argv, t_app *game)
+void	handler_map_checker(char **argv, t_app *game)
 {
 	game->rows_counter = count_lines(argv[1]);
 	init_map(argv[1], game, game->rows_counter);
@@ -22,33 +22,7 @@ void	handler_map_validator(char **argv, t_app *game)
 	are_key_tiles_reachable(game, argv);
 }
 
-int	handler_player_moves_counter(int key, void *param)
-{
-	int		x;
-	int		y;
-	t_app	*game;
-
-	game = (t_app *)param;
-	x = game->coor_x;
-	y = game->coor_y;
-	if (key == XK_Escape)
-		handler_exit_app(game);
-	else if ((key == XK_w || key == XK_Up)
-		&& is_next_pos_ok(game, x, (y - 1)) == 0)
-		move_player(game, 'W', x, y);
-	else if ((key == XK_a || key == XK_Left)
-		&& is_next_pos_ok(game, (x - 1), y) == 0)
-		move_player(game, 'A', x, y);
-	else if ((key == XK_s || key == XK_Down)
-		&& is_next_pos_ok(game, x, (y + 1)) == 0)
-		move_player(game, 'S', x, y);
-	else if ((key == XK_d || key == XK_Right)
-		&& is_next_pos_ok(game, (x + 1), y) == 0)
-		move_player(game, 'D', x, y);
-	return (0);
-}
-
-void	handler_map_draw(t_app *game)
+void	handler_map_drawer(t_app *game)
 {
 	int	x;
 	int	y;
@@ -75,15 +49,41 @@ void	handler_map_draw(t_app *game)
 	}
 }
 
+int	handler_player(int key, void *param)
+{
+	int		x;
+	int		y;
+	t_app	*game;
+
+	game = (t_app *)param;
+	x = game->coor_x;
+	y = game->coor_y;
+	if (key == XK_Escape)
+		handler_exit_app(game);
+	else if ((key == XK_w || key == XK_Up)
+		&& is_tile_allowed(game, x, (y - 1)) == 0)
+		move_player(game, 'W', x, y);
+	else if ((key == XK_a || key == XK_Left)
+		&& is_tile_allowed(game, (x - 1), y) == 0)
+		move_player(game, 'A', x, y);
+	else if ((key == XK_s || key == XK_Down)
+		&& is_tile_allowed(game, x, (y + 1)) == 0)
+		move_player(game, 'S', x, y);
+	else if ((key == XK_d || key == XK_Right)
+		&& is_tile_allowed(game, (x + 1), y) == 0)
+		move_player(game, 'D', x, y);
+	return (0);
+}
+
 void	handler_game(t_app *game)
 {
 	game->mlx = mlx_init();
-	init_images(game);
+	init_mlx_images(game);
 	game->win = mlx_new_window(game->mlx, game->cols_counter * RES,
 			game->rows_counter * RES, "Non sense simulator");
-	handler_map_draw(game);
+	handler_map_drawer(game);
 	mlx_hook(game->win, KeyPress, KeyPressMask, \
-	handler_player_moves_counter, game);
+		handler_player, game);
 	mlx_hook(game->win, DestroyNotify, ButtonPressMask, \
 	&handler_exit_app, game);
 	mlx_loop(game->mlx);
@@ -95,7 +95,7 @@ int	main(int argc, char **argv)
 
 	check_args(argc, argv);
 	game_init(&game);
-	handler_map_validator(argv, &game);
+	handler_map_checker(argv, &game);
 	handler_game(&game);
 	handler_exit_app(&game);
 	return (0);

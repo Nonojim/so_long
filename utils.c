@@ -6,7 +6,7 @@
 /*   By: npederen <npederen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 16:12:00 by npederen          #+#    #+#             */
-/*   Updated: 2025/03/30 04:57:00 by npederen         ###   ########.fr       */
+/*   Updated: 2025/03/30 11:03:09 by npederen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void	draw_img(t_app *game, void *img, int x, int y)
 	mlx_put_image_to_window(game->mlx, game->win, img, x, y);
 }
 
-void	update_player_coordinates(t_app *game, int x, int y)
+void	update_player_xy(t_app *game, int x, int y)
 {
 	game->coor_x = x;
 	game->coor_y = y;

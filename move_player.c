@@ -6,7 +6,7 @@
 /*   By: npederen <npederen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 20:47:38 by npederen          #+#    #+#             */
-/*   Updated: 2025/03/30 04:56:49 by npederen         ###   ########.fr       */
+/*   Updated: 2025/03/30 11:16:52 by npederen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	get_exit_xy(t_app *game)
 	}
 }
 
-int	is_next_pos_ok(t_app *game, int x, int y)
+int	is_tile_allowed(t_app *game, int x, int y)
 {
 	if (game->map[y][x] == '0')
 		return (0);
@@ -64,7 +64,7 @@ int	is_next_pos_ok(t_app *game, int x, int y)
 	return (0);
 }
 
-void	update_boat_move_img(t_app *game, int nx, int ny, char key)
+void	update_boat_img(t_app *game, int nx, int ny, char key)
 {
 	int	nxpx;
 	int	nypx;
@@ -88,7 +88,7 @@ void	update_boat_move_img(t_app *game, int nx, int ny, char key)
 		game->img_player_right, nxpx, nypx);
 }
 
-void	update_p_move_img(t_app *game, int nx, int ny, char key)
+void	update_player_img(t_app *game, int nx, int ny, char key)
 {
 	int	x;
 	int	y;
@@ -101,7 +101,7 @@ void	update_p_move_img(t_app *game, int nx, int ny, char key)
 	else
 		mlx_put_image_to_window(game->mlx, game->win, \
 		game->img_background, x, y);
-	update_boat_move_img(game, nx, ny, key);
+	update_boat_img(game, nx, ny, key);
 	game->moves_counter++;
 	ft_putstr_fd("moves_counter: ", 1);
 	ft_putnbr_fd(game->moves_counter, 1);
@@ -112,23 +112,23 @@ void	move_player(t_app *game, char key, int x, int y)
 {
 	if (key == 'W')
 	{
-		update_p_move_img(game, x, (y - 1), 'W');
-		update_player_coordinates(game, x, (y - 1));
+		update_player_img(game, x, (y - 1), 'W');
+		update_player_xy(game, x, (y - 1));
 	}
 	if (key == 'A')
 	{
-		update_p_move_img(game, (x - 1), y, 'A');
-		update_player_coordinates(game, (x - 1), y);
+		update_player_img(game, (x - 1), y, 'A');
+		update_player_xy(game, (x - 1), y);
 	}
 	if (key == 'S')
 	{
-		update_p_move_img(game, x, (y + 1), 'S');
-		update_player_coordinates(game, x, (y + 1));
+		update_player_img(game, x, (y + 1), 'S');
+		update_player_xy(game, x, (y + 1));
 	}
 	if (key == 'D')
 	{
-		update_p_move_img(game, (x + 1), y, 'D');
-		update_player_coordinates(game, (x + 1), y);
+		update_player_img(game, (x + 1), y, 'D');
+		update_player_xy(game, (x + 1), y);
 	}
 	if (game->map[y][x] == 'C' || game->map[y][x] == 'I')
 		game->map[y][x] = 'I';

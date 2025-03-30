@@ -54,17 +54,17 @@ typedef struct s_app
 
 void	game_init(t_app *game);
 int		init_map(char *argv, t_app *game, int rows_counter);
-void	init_images(t_app *game);
+void	init_mlx_images(t_app *game);
 int		is_it_ber(char *file_name);
 void	check_args(int argc, char **argv);
-void	handler_map_validator(char **argv, t_app *game);
+void	handler_map_checker(char **argv, t_app *game);
+void	handler_map_drawer(t_app *game);
 void	handler_game(t_app *game);
-void	handler_map_draw(t_app *game);
-int		handler_player_moves_counter(int key, void *param);
+int		handler_player(int key, void *param);
 void	get_exit_xy(t_app *game);
-int		is_next_pos_ok(t_app *game, int x, int y);
-void	update_boat_move_img(t_app *game, int nx, int ny, char key);
-void	update_p_move_img(t_app *game, int nx, int ny, char key);
+int		is_tile_allowed(t_app *game, int x, int y);
+void	update_boat_img(t_app *game, int nx, int ny, char key);
+void	update_player_img(t_app *game, int nx, int ny, char key);
 void	move_player(t_app *game, char key, int x, int y);
 int		count_lines(char *argv);
 void	count_key_tiles(t_app *game);
@@ -78,7 +78,7 @@ void	map_tiles_checker(t_app *game);
 void	free_map(char **map, t_app *game);
 int		handler_exit_app(t_app *game);
 void	draw_img(t_app *game, void *img, int x, int y);
-void	update_player_coordinates(t_app *game, int x, int y);
+void	update_player_xy(t_app *game, int x, int y);
 
 # define IMG_PLAYER_UP "./images/boatU.xpm"
 # define IMG_PLAYER_DOWN "./images/boatD.xpm"

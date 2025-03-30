@@ -6,7 +6,7 @@
 /*   By: npederen <npederen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/22 16:14:51 by npederen          #+#    #+#             */
-/*   Updated: 2025/03/30 05:04:08 by npederen         ###   ########.fr       */
+/*   Updated: 2025/03/30 11:07:30 by npederen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ int	init_map(char *argv, t_app *game, int rows_counter)
 	return (0);
 }
 
-void	init_images(t_app *game)
+void	init_mlx_images(t_app *game)
 {
 	int	size;
 
