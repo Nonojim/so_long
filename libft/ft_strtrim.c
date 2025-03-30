@@ -26,32 +26,32 @@ static int	isfromset(char c, char const *set)
 	return (0);
 }
 
-char	*ft_strtrim(char const *s1, char const *set)
+char	*ft_strtrim(char const *s1, char const *charset)
 {
-	char	*str;
 	size_t	i;
 	size_t	j;
 	size_t	k;
-	size_t	size;
+	char	*str;
 
-	if (ft_strlen(s1) == 0)
-		return (str = ft_calloc(1, sizeof(char)));
+	if (!charset || charset[0] == '\0')
+		return (ft_strdup(s1));
 	i = 0;
-	j = (ft_strlen(s1) - 1);
 	k = 0;
-	while (j >= i && isfromset(s1[i], set))
+	j = ft_strlen(s1) - 1;
+	if (j <= 0)
+		return (ft_strdup(""));
+	while (isfromset(s1[i], charset) == 1 && s1[i] != '\0')
 		i++;
-	while (j > i && isfromset(s1[j], set))
+	while (isfromset(s1[j], charset) == 1 && j > 0)
 		j--;
-	size = j - (i - 1);
-	str = ft_calloc((size + 1), sizeof(char));
-	if (!str)
+	if (i > j)
+		return (ft_strdup(""));
+	str = malloc((j - i + 2) * sizeof(char));
+	if (str == NULL)
 		return (NULL);
-	while (k < size)
-	{
-		str[k] = s1[i + k];
-		k++;
-	}
+	while (i < j + 1)
+		str[k++] = s1[i++];
+	str[k] = '\0';
 	return (str);
 }
 
