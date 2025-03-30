@@ -6,7 +6,7 @@
 /*   By: npederen <npederen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 20:47:38 by npederen          #+#    #+#             */
-/*   Updated: 2025/03/29 21:55:12 by npederen         ###   ########.fr       */
+/*   Updated: 2025/03/30 04:56:49 by npederen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ int	is_next_pos_ok(t_app *game, int x, int y)
 		{
 			get_exit_xy(game);
 			mlx_put_image_to_window(game->mlx, game->win, game->img_exit_open, \
-			(game->exit_coor_x * 32), (game->exit_coor_y * 32));
+			(game->exit_coor_x * RES), (game->exit_coor_y * RES));
 		}
 		return (0);
 	}
@@ -69,8 +69,8 @@ void	update_boat_move_img(t_app *game, int nx, int ny, char key)
 	int	nxpx;
 	int	nypx;
 
-	nxpx = nx * 32;
-	nypx = ny * 32;
+	nxpx = nx * RES;
+	nypx = ny * RES;
 	if (game->map[ny][nx] == 'C' || game->map[ny][nx] == 'I')
 		mlx_put_image_to_window(game->mlx, game->win, \
 		game->img_player_island, nxpx, nypx);
@@ -93,8 +93,8 @@ void	update_p_move_img(t_app *game, int nx, int ny, char key)
 	int	x;
 	int	y;
 
-	x = game->coor_x * 32;
-	y = game->coor_y * 32;
+	x = game->coor_x * RES;
+	y = game->coor_y * RES;
 	if (game->map[game->coor_y][game->coor_x] == 'C' \
 	|| game->map[game->coor_y][game->coor_x] == 'I')
 		mlx_put_image_to_window(game->mlx, game->win, game->img_island, x, y);

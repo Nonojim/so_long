@@ -91,5 +91,6 @@ void	update_player_coordinates(t_app *game, int x, int y);
 # define IMG_ISLAND "./images/island.xpm"
 # define IMG_WALL "./images/wall.xpm"
 # define IMG_BACKGROUND "./images/water.xpm"
+# define RES 32
 
 #endif

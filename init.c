@@ -6,7 +6,7 @@
 /*   By: npederen <npederen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/22 16:14:51 by npederen          #+#    #+#             */
-/*   Updated: 2025/03/30 04:23:30 by npederen         ###   ########.fr       */
+/*   Updated: 2025/03/30 05:04:08 by npederen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,12 +53,12 @@ int	init_map(char *argv, t_app *game, int rows_counter)
 	if (!game->map)
 		return (ft_putstr_fd("Error\nmalloc failed\n", 2), 1);
 	fd = open(argv, O_RDONLY);
-	while (1)
+	while (i <= rows_counter)
 	{
 		line = get_next_line(fd);
 		if (!line)
 			break ;
-		game->map[i] = ft_strtrim(line, "\n");
+		game->map[i] = ft_strtrim(line, "\r\n");
 		free(line);
 		if (!game->map[i])
 			return (ft_putstr_fd("Error\nmalloc failed in ft_strtrim\n", 2), \
@@ -74,7 +74,7 @@ void	init_images(t_app *game)
 {
 	int	size;
 
-	size = 32;
+	size = RES;
 	game->img_player_up = \
 	mlx_xpm_file_to_image(game->mlx, IMG_PLAYER_UP, &size, &size);
 	game->img_player_down \

@@ -6,7 +6,7 @@
 /*   By: npederen <npederen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 16:12:00 by npederen          #+#    #+#             */
-/*   Updated: 2025/03/30 04:09:50 by npederen         ###   ########.fr       */
+/*   Updated: 2025/03/30 04:57:00 by npederen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,8 @@ int	handler_exit_app(t_app *game)
 
 void	draw_img(t_app *game, void *img, int x, int y)
 {
-	x = x * 32;
-	y = y * 32;
+	x = x * RES;
+	y = y * RES;
 	mlx_put_image_to_window(game->mlx, game->win, img, x, y);
 }
 

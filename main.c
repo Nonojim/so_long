@@ -6,7 +6,7 @@
 /*   By: npederen <npederen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/22 13:33:15 by npederen          #+#    #+#             */
-/*   Updated: 2025/03/30 04:12:56 by npederen         ###   ########.fr       */
+/*   Updated: 2025/03/30 04:56:22 by npederen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,8 +79,8 @@ void	handler_game(t_app *game)
 {
 	game->mlx = mlx_init();
 	init_images(game);
-	game->win = mlx_new_window(game->mlx, game->cols_counter * 32,
-			game->rows_counter * 32, "Non sense simulator");
+	game->win = mlx_new_window(game->mlx, game->cols_counter * RES,
+			game->rows_counter * RES, "Non sense simulator");
 	handler_map_draw(game);
 	mlx_hook(game->win, KeyPress, KeyPressMask, \
 	handler_player_moves_counter, game);
