@@ -23,6 +23,7 @@ all: $(NAME)
 #NAME  "@"hide in command in terminal
 $(NAME): $(OBJS)
 	@make -C libft/
+	@make -C minilibx-linux/
 	gcc -g $(OBJS) $(LIBFT) $(INC_MLX) -o $(NAME)
 # "%.o" rule compie .c file into corresponding .o file
 # "%" is a wildcard for "name of the files without extension"
@@ -32,7 +33,8 @@ $(NAME): $(OBJS)
 #clean delete all .o files
 clean:
 	$(RM) $(OBJS)
-	make -C libft/ clean
+	@make -C libft/ clean
+	@make -C minilibx-linux/ clean
 #after executing clean delete the lib
 fclean: clean
 	$(RM) $(NAME)
