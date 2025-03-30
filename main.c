@@ -6,7 +6,7 @@
 /*   By: npederen <npederen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/22 13:33:15 by npederen          #+#    #+#             */
-/*   Updated: 2025/03/30 11:15:06 by npederen         ###   ########.fr       */
+/*   Updated: 2025/03/30 16:06:06 by npederen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ void	handler_map_checker(char **argv, t_app *game)
 	game->rows_counter = count_lines(argv[1]);
 	init_map(argv[1], game, game->rows_counter);
 	game->cols_counter = ft_strlen(game->map[0]);
+	check_max_width(game);
 	count_key_tiles(game);
 	map_tiles_checker(game);
 	are_key_tiles_reachable(game, argv);

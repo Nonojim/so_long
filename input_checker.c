@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   checker.c                                          :+:      :+:    :+:   */
+/*   input_checker.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: npederen <npederen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/22 15:09:27 by npederen          #+#    #+#             */
-/*   Updated: 2025/03/22 15:09:27 by npederen         ###   ########.fr       */
+/*   Updated: 2025/03/30 16:13:57 by npederen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,4 +49,23 @@ void	check_args(int argc, char **argv)
 	}
 	else
 		close(fd);
+}
+
+void	check_max_width(t_app *game)
+{
+	if (game->cols_counter > MAP_MAXWIDTH)
+	{
+		ft_putstr_fd("Error\nMap max width reached, shorten your map\n", 2);
+		free_map(game->map, game);
+		exit(1);
+	}
+}
+
+void	check_max_height(int lines_counter)
+{
+	if (lines_counter > MAP_MAXHEIGHT)
+	{
+		ft_putstr_fd("Error\nMap max height reached, shorten your map\n", 2);
+		exit(1);
+	}
 }

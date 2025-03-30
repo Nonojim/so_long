@@ -6,7 +6,7 @@
 /*   By: npederen <npederen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 15:44:00 by npederen          #+#    #+#             */
-/*   Updated: 2025/03/30 04:21:29 by npederen         ###   ########.fr       */
+/*   Updated: 2025/03/30 16:14:13 by npederen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ int	count_lines(char *argv)
 		ft_putstr_fd("Error\nMap file is empty\n", 2);
 		exit(1);
 	}
+	check_max_height(lines_counter);
 	close(fd);
 	return (lines_counter);
 }
@@ -91,7 +92,14 @@ int	flood_fill(t_app *game, char **map, int x, int y)
 
 	if (y < 0 || x < 0 || y >= game->rows_counter || x >= game->cols_counter \
 	|| map[y][x] == '1' || map[y][x] == 'E')
+	{
+		if (map[y][x] == 'E')
+		{
+			collectible++;
+			map[y][x] = '1';
+		}
 		return (0);
+	}
 	if (map[y][x] == 'C')
 		collectible++;
 	map[y][x] = '1';
@@ -99,7 +107,7 @@ int	flood_fill(t_app *game, char **map, int x, int y)
 	flood_fill(game, map, x - 1, y);
 	flood_fill(game, map, x, y + 1);
 	flood_fill(game, map, x, y - 1);
-	if (collectible == (game->collectibles_counter))
+	if (collectible == (game->collectibles_counter + 1))
 		return (0);
 	else
 		return (1);

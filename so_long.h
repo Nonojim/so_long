@@ -6,7 +6,7 @@
 /*   By: npederen <npederen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/22 13:34:45 by npederen          #+#    #+#             */
-/*   Updated: 2025/03/22 13:34:45 by npederen         ###   ########.fr       */
+/*   Updated: 2025/03/30 16:15:11 by npederen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,8 @@ int		init_map(char *argv, t_app *game, int rows_counter);
 void	init_mlx_images(t_app *game);
 int		is_it_ber(char *file_name);
 void	check_args(int argc, char **argv);
+void	check_max_height(int lines_counter);
+void	check_max_width(t_app *game);
 void	handler_map_checker(char **argv, t_app *game);
 void	handler_map_drawer(t_app *game);
 void	handler_game(t_app *game);
@@ -92,5 +94,7 @@ void	update_player_xy(t_app *game, int x, int y);
 # define IMG_WALL "./images/wall.xpm"
 # define IMG_BACKGROUND "./images/water.xpm"
 # define RES 32
+# define MAP_MAXHEIGHT 63
+# define MAP_MAXWIDTH 120
 
 #endif
