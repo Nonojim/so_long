@@ -26,7 +26,7 @@ int	is_it_ber(char *file_name)
 	return (0);
 }
 
-int	check_args(int argc, char **argv)
+void	check_args(int argc, char **argv)
 {
 	int	fd;
 
@@ -49,5 +49,4 @@ int	check_args(int argc, char **argv)
 	}
 	else
 		close(fd);
-	return (0);
 }

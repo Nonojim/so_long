@@ -6,7 +6,7 @@
 /*   By: npederen <npederen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 15:46:50 by npederen          #+#    #+#             */
-/*   Updated: 2025/03/29 21:40:26 by npederen         ###   ########.fr       */
+/*   Updated: 2025/03/30 04:08:38 by npederen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,29 +86,28 @@ int	are_map_tiles_recognized(char **map)
 	return (0);
 }
 
-int	map_tiles_checker(t_app *game)
+void	map_tiles_checker(t_app *game)
 {
 	if (check_row_length(game->map) == 1)
 	{
 		free_map(game->map, game);
-		(exit(1));
+		exit(1);
 	}
 	if (is_map_walled(game) == 1)
 	{
 		free_map(game->map, game);
-		(exit(1));
+		exit(1);
 	}
 	if (are_map_tiles_recognized(game->map) == 1)
 	{
 		free_map(game->map, game);
-		(exit(1));
+		exit(1);
 	}
 	if (game->collectibles_counter == 0 || game->players_counter != 1 \
 	|| game->exits_counter != 1)
 	{
 		ft_putstr_fd("Error\nmap rules not respected\n", 2);
 		free_map(game->map, game);
-		(exit(1));
+		exit(1);
 	}
-	return (0);
 }

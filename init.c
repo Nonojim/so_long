@@ -6,7 +6,7 @@
 /*   By: npederen <npederen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/22 16:14:51 by npederen          #+#    #+#             */
-/*   Updated: 2025/03/30 01:32:51 by npederen         ###   ########.fr       */
+/*   Updated: 2025/03/30 04:23:30 by npederen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int	init_map(char *argv, t_app *game, int rows_counter)
 	if (!game->map)
 		return (ft_putstr_fd("Error\nmalloc failed\n", 2), 1);
 	fd = open(argv, O_RDONLY);
-	while (i < rows_counter)
+	while (1)
 	{
 		line = get_next_line(fd);
 		if (!line)
@@ -61,8 +61,8 @@ int	init_map(char *argv, t_app *game, int rows_counter)
 		game->map[i] = ft_strtrim(line, "\n");
 		free(line);
 		if (!game->map[i])
-			return (ft_putstr_fd("Error\nmalloc failed in ft_strtrim\n", 2),
-				free_map(game->map, game), close(fd), 1);
+			return (ft_putstr_fd("Error\nmalloc failed in ft_strtrim\n", 2), \
+			free_map(game->map, game), close(fd), 1);
 		i++;
 	}
 	game->map[i] = NULL;

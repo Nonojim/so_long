@@ -19,6 +19,7 @@
 # include <fcntl.h>
 # include "libft/libft.h"
 # include "minilibx-linux/mlx.h"
+# include <string.h>
 # include <X11/X.h>
 # include <X11/keysym.h>
 
@@ -55,7 +56,7 @@ void	game_init(t_app *game);
 int		init_map(char *argv, t_app *game, int rows_counter);
 void	init_images(t_app *game);
 int		is_it_ber(char *file_name);
-int		check_args(int argc, char **argv);
+void	check_args(int argc, char **argv);
 void	handler_map_validator(char **argv, t_app *game);
 void	handler_game(t_app *game);
 void	handler_map_draw(t_app *game);
@@ -73,7 +74,7 @@ void	are_key_tiles_reachable(t_app *game, char **argv);
 int		check_row_length(char **map);
 int		is_map_walled(t_app *game);
 int		are_map_tiles_recognized(char **map);
-int		map_tiles_checker(t_app *game);
+void	map_tiles_checker(t_app *game);
 void	free_map(char **map, t_app *game);
 int		handler_exit_app(t_app *game);
 void	draw_img(t_app *game, void *img, int x, int y);

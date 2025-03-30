@@ -6,7 +6,7 @@
 /*   By: npederen <npederen@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 15:44:00 by npederen          #+#    #+#             */
-/*   Updated: 2025/03/29 21:36:52 by npederen         ###   ########.fr       */
+/*   Updated: 2025/03/30 04:21:29 by npederen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,12 @@ int	count_lines(char *argv)
 		free(line);
 		lines_counter++;
 	}
-	close(fd);
 	if (lines_counter == 0)
 	{
 		ft_putstr_fd("Error\nMap file is empty\n", 2);
 		exit(1);
 	}
+	close(fd);
 	return (lines_counter);
 }
 
@@ -111,7 +111,7 @@ void	are_key_tiles_reachable(t_app *game, char **argv)
 
 	game_init(&tmp);
 	if (init_map(argv[1], &tmp, game->rows_counter) == 1)
-		return (free_map(tmp.map, game));
+		free_map(tmp.map, game);
 	get_player_xy(game);
 	if (flood_fill(game, tmp.map, game->coor_x, game->coor_y) == 1)
 	{
@@ -120,5 +120,5 @@ void	are_key_tiles_reachable(t_app *game, char **argv)
 		free_map(game->map, game);
 		exit(1);
 	}
-	free_map(tmp.map, &tmp);
+	free_map(tmp.map, game);
 }
